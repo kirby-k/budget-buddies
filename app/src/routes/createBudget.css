@@ -1,0 +1,12 @@
+.category-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-content: space-between;
+  border: red;
+}
+
+.test {
+  border: green;
+}

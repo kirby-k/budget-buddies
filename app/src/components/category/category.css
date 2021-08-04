@@ -1,0 +1,27 @@
+.category-tile {
+  background-color: #5A8CBA;
+  color: #FFFFFF;
+  width: 11.5vw;
+  height: 13.5vh;
+  border-radius: 20px;
+  padding: 7px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.category-tile:hover {
+  background-color: #7ba7d1;
+}
+
+.category-icon {
+  max-width: 4vw;
+  max-height: 5vw;
+}
+
+.category-text {
+  font-size: 12pt;
+  font-weight: bold;
+}
