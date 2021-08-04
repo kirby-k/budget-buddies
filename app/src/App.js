@@ -1,30 +1,31 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 import './App.css';
-import CreateBudget from './createBudget';
-import Dashboard from './dashboard';
-import Home from './home';
+import CreateBudget from './routes/CreateBudget';
+import Dashboard from './routes/Dashboard';
+import Home from './routes/Home';
 
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/createBudget">Create Budget</Link>
-            </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          </ul>
-        </nav>
+      <BrowserRouter>
 
-        <BrowserRouter>
+        <div className="App">
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/createBudget">Create Budget</Link>
+              </li>
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+            </ul>
+          </nav>
+
           <Switch>
             <Route exact path="/">
               <Home />
@@ -38,9 +39,10 @@ class App extends Component {
               <Dashboard />
             </Route>
           </Switch>
-        </BrowserRouter>
 
-      </div>
+        </div>
+      </BrowserRouter>
+
     );
   }
 }
