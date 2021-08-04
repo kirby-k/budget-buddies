@@ -67,3 +67,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# DO NOT COMMIT NODE MODULES LOL
+node_modules
