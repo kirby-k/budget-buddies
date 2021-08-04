@@ -4,6 +4,7 @@ Defines required database queries.
 from bson.json_util import dumps
 import pymongo
 from bson.objectid import ObjectId
+from pymongo.collection import ReturnDocument
 
 def get_user_by_user_pwd(client: pymongo.MongoClient, username: str, password: str) -> dict:
     '''
@@ -73,7 +74,7 @@ def get_budget(client: pymongo.MongoClient, budget_id: str) -> dict:
     else:
         return None
 
-def add_budget(client: pymongo.MongoClient, budget: dict) -> str:
+def add_budget(client: pymongo.MongoClient, user_id: str, budget: dict) -> str:
     '''
     Adds a new budget to the database.
     Returns None if the budget_id does not exist.
@@ -84,12 +85,20 @@ def add_budget(client: pymongo.MongoClient, budget: dict) -> str:
     client (pymongo.MongoClient) : the MongoDB client.
     budget (dict) : the budget json object.
     '''
+    # insert the new budget
     res = client.BudgetBuddies.Budget.insert_one(budget)
     if not res.acknowledged:
         return None
+    # insert the budget into the budgets list for the user
+    user_update = client.BudgetBuddies.User.find_one_and_update(
+        { '_id': ObjectId(user_id) },
+        { '$push': {'budgets': res.inserted_id } }
+    )
+    if not user_update:
+        return None
     return str(res.inserted_id)
 
-def delete_budget(budget_id: int) -> dict:
+def delete_budget(client, user_id: str, budget_id: str) -> dict:
     '''
     Removes record corresponding to the given budget_id as a json object.
     Returns None if the budget_id does not exist.
@@ -99,7 +108,22 @@ def delete_budget(budget_id: int) -> dict:
     ----------
     budget_id (int) : the _id field for the budget (assuming the budget exists).
     '''
-    return None
+    # delete the budget
+    res = client.BudgetBuddies.Budget.delete_one(
+        { '_id': ObjectId(budget_id) }
+    )
+    print(res.deleted_count)
+    if not res.deleted_count:
+        return None
+    # delete the budget for the user
+    print(get_user(client, user_id))
+    user_update = client.BudgetBuddies.User.find_one_and_update(
+        { '_id': ObjectId(user_id) },
+        { '$pull': {'budgets': budget_id } }
+    )
+    if not user_update:
+        return None
+    return budget_id
 
 def edit_budget(budget_id: int, budget: dict) -> dict:
     '''

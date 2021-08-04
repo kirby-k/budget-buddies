@@ -40,15 +40,28 @@ def get_budget():
 @app.route('/budget', methods=['POST'])
 def add_budget():
     budget = flask.request.json
-    res = functions.add_budget(client, budget)
+    user_id = flask.request.args.get('user_id', None)
+    if not user_id:
+        return 'Missing user_id param', 400
+    res = functions.add_budget(client, user_id, budget)
     if res:
         return res, 200
     else:
-        return f'Error creating budget {budget}', 400
+        return f'Error creating budget {budget} for user {user_id}.', 400
 
 @app.route('/budget', methods=['DELETE'])
 def delete_budget():
-    return 'OK', 200
+    budget_id = flask.request.args.get('budget_id', None)
+    user_id = flask.request.args.get('user_id', None)
+    if not budget_id:
+        return 'Missing budget_id param', 400
+    if not user_id:
+        return 'Missing user_id param', 400
+    res = functions.delete_budget(client, user_id, budget_id)
+    if res:
+        return res, 200
+    else:
+        return f'Error deleting budget {budget_id} for user {user_id}.', 400
 
 @app.route('/budget', methods=['PUT'])
 def edit_budget():
