@@ -1,6 +1,6 @@
 import datetime
 import flask
-from . import app
+from . import app, client
 from .db import functions
 
 @app.route('/')
@@ -12,11 +12,11 @@ def get_user():
    	# fetch the user as a json object and return it
 	username = flask.request.args.get('username', None)
 	password = flask.request.args.get('password', None)
-	user_id = functions.get_user_id(username, password)
+	user_id = functions.get_user_id(client, username, password)
 	if not user_id:
 		return "could not get user_id from db", 400
 
-	user = functions.get_user(user_id)
+	user = functions.get_user(client, user_id)
 	if user:
 		return user, 200
 	else:
@@ -27,7 +27,7 @@ def add_user():
     # add to database and return the db generated id with 200 if successful
     # return error message with failure code
 	user = flask.request.json
-	user_id = functions.add_user(user)
+	user_id = functions.add_user(client, user)
 	if user_id:
 		return user_id, 200
 	else:
@@ -36,7 +36,7 @@ def add_user():
 @app.route('/budget', methods=['GET'])
 def get_budget():
 	budget_id = flask.request.args.get('_id', None)
-	budget = functions.get_budget(budget_id)
+	budget = functions.get_budget(client, budget_id)
 	if budget:
 		return budget, 200
 	else:
@@ -45,7 +45,7 @@ def get_budget():
 @app.route('/budget', methods=['POST'])
 def add_budget():
 	budget = flask.request.json
-	budget_id = functions.add_budget(budget)
+	budget_id = functions.add_budget(client, budget)
 	if budget_id:
 		return budget_id, 200
 	else:
@@ -54,7 +54,7 @@ def add_budget():
 @app.route('/budget', methods=['DELETE'])
 def delete_budget():
 	budget_id = flask.request.args.get('_id', None)
-	budget = functions.delete_budget(budget_id)
+	budget = functions.delete_budget(client, budget_id)
 	if budget:
 		return budget, 200
 	else:
@@ -64,7 +64,7 @@ def delete_budget():
 def edit_budget():
 	budget_id = flask.request.args.get('_id', None)
 	budget = flask.request.json
-	newBudget = functions.edit_budget(budget_id, budget)
+	newBudget = functions.edit_budget(client, budget_id, budget)
 	if newBudget:
 		return newBudget, 200
 	else:
