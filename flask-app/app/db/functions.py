@@ -16,10 +16,10 @@ def get_user_by_user_pwd(client: pymongo.MongoClient, username: str, password: s
     username (str) : the user's username.
     password (str) : the user's password.
     ''' 
-    return client.BudgetBuddies.User.find_one({
+    return dumps(client.BudgetBuddies.User.find_one({
         'username': username,
         'password': password
-    })
+    }))
 
 def get_user(client: pymongo.MongoClient, user_id: str) -> dict:
     '''
@@ -31,9 +31,13 @@ def get_user(client: pymongo.MongoClient, user_id: str) -> dict:
     client (pymongo.MongoClient) : the MongoDB client.
     user_id (str) : the _id field for the user (assuming the user exists).
     '''
-    return client.BudgetBuddies.User.find_one({
+    user = client.BudgetBuddies.User.find_one({
         '_id': ObjectId(user_id)
     })
+    if user:
+        return dumps(user)
+    else:
+        return None
 
 def add_user(client: pymongo.MongoClient, user: dict) -> str:
     '''
@@ -49,7 +53,7 @@ def add_user(client: pymongo.MongoClient, user: dict) -> str:
     res = client.BudgetBuddies.User.insert_one(user)
     if not res.acknowledged:
         return None
-    return res.inserted_id
+    return str(res.inserted_id)
 
 def get_budget(client: pymongo.MongoClient, budget_id: str) -> dict:
     '''
@@ -61,11 +65,15 @@ def get_budget(client: pymongo.MongoClient, budget_id: str) -> dict:
     client (pymongo.MongoClient) : the MongoDB client.
     budget_id (str) : the _id field for the budget (assuming the budget exists).
     '''
-    return dumps(client.BudgetBuddies.Budget.find_one({
+    budget = client.BudgetBuddies.Budget.find_one({
         '_id': ObjectId(budget_id)
-    }))
+    })
+    if budget:
+        return dumps(budget)
+    else:
+        return None
 
-def add_budget(client: pymongo.MongoClient, budget: dict) -> dict:
+def add_budget(client: pymongo.MongoClient, budget: dict) -> str:
     '''
     Adds a new budget to the database.
     Returns None if the budget_id does not exist.
@@ -79,7 +87,7 @@ def add_budget(client: pymongo.MongoClient, budget: dict) -> dict:
     res = client.BudgetBuddies.Budget.insert_one(budget)
     if not res.acknowledged:
         return None
-    return res.inserted_id
+    return str(res.inserted_id)
 
 def delete_budget(budget_id: int) -> dict:
     '''
