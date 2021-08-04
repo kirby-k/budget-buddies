@@ -10,8 +10,7 @@ def ping():
 @app.route('/user', methods=['GET'])
 def get_user():
    	# fetch the user as a json object and return it
-
-    username = flask.request.args.get('username', None)
+	username = flask.request.args.get('username', None)
 	password = flask.request.args.get('password', None)
 	user_id = functions.get_user_id(username, password)
 	if not user_id:
@@ -27,7 +26,7 @@ def get_user():
 def add_user():
     # add to database and return the db generated id with 200 if successful
     # return error message with failure code
-    user = flask.request.json
+	user = flask.request.json
 	user_id = functions.add_user(user)
 	if user_id:
 		return user_id, 200
