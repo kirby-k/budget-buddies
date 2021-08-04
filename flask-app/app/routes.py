@@ -1,6 +1,5 @@
-import datetime
 import flask
-from . import app
+from . import app, client
 from .db import functions
 
 @app.route('/')
@@ -25,7 +24,14 @@ def add_user():
 
 @app.route('/budget', methods=['GET'])
 def get_budget():
-    return 'OK', 200
+    budget_id = flask.request.args.get('budget_id', None)
+    if not budget_id:
+        return 'Missing budget_id param', 400
+    budget = functions.get_budget(client, budget_id)
+    if budget:
+        return budget, 200
+    else:
+        return f'Budget with _id "{budget_id}" does not exist', 400
 
 @app.route('/budget', methods=['POST'])
 def add_budget():

@@ -1,11 +1,16 @@
 import os
-from app import cfg
+import pymongo
+import certifi
 
-# initialize the configuration file parser
-config = cfg.initialize_cfg('<insert path here>')
+# set up the db url
+url = "mongodb+srv://budget-buddies:1yRbFZqqDBtKoI9U@cluster0.psssp.mongodb.net"
 
-# select int, test, qa, or prod environment
-config_field = 'TEST'
+# initialize the MongoDB client
+client = pymongo.MongoClient(url, serverSelectionTimeoutMS=5000, tlsCAFile=certifi.where())
+
+# get the database
+database = client.BudgetBuddies
+# print(database.list_collection_names())
 
 # create the flask app
 from flask import Flask
@@ -14,5 +19,3 @@ app = Flask(__name__)
 # run the flask app
 from app import routes
 app.run(host='127.0.0.1', debug=True)
-
-
